@@ -1,0 +1,33 @@
+import pandas as pd
+
+print("***Make sure your excel spreadsheet is saved to your desktop!***\n")
+
+# Ask for the excel file name to load into the data frame
+workbook = input("Enter the excel file name: ")
+
+# Adds path and ext to the file name, as long as the file is saved to the desktop
+workbook_extd = f"C:\\Users\\User\\Desktop\\{workbook}.xlsx"
+
+# Read data from the specified sheet
+df = pd.read_excel(workbook_extd, sheet_name="Sheet1")
+
+# Get the column in the spreadsheet that contains the data
+col_name = input("Which column do you want to pull from? This will be the name of the column such as \'Source IP\', not the column letter: ")
+
+# Check if the specified column exists in the DataFrame
+if col_name not in df.columns and col_name.upper() not in df.columns:
+    print(f"Column '{col_name}' not found in the DataFrame.")
+else:
+    col_name = col_name.upper() if col_name.upper() in df.columns else col_name
+    ip_address_list = df[col_name].tolist()
+
+    prefix = input("What prefix do you want to use in the string? example: las-prod-dmz-, atl-prod-, etc.. : ")
+
+    color = input("What color do you want the hosts to be? ")
+    color = color.upper()
+
+    # Fixes the color name to be consistent with the command line syntax
+    color_amend = f"\"{color}\""
+
+    for i in ip_address_list:
+        print(f"add host name {prefix}{i} ip-address {i} color {color_amend}")
