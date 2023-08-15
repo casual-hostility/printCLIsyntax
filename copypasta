@@ -1,0 +1,35 @@
+import pandas as pd
+import pyperclip
+
+print("Welcome to PJ's Ultimate CLI Generator!!!\n")
+print("This tool allows you to generate the proper syntax to create new hosts in the firewall CLI.\n")
+
+prefix = input("What prefix do you want to use in the string? example: las-prod-dmz-, atl-prod-, etc.. : ")
+
+# picks the color for the hosts on the firewall interface
+color = input("What color do you want the hosts to be? ")
+# makes the color name upper case
+color = color.upper()
+
+# Fixes the color name to be consistent with the command line syntax
+color_amend = f"\"{color}\""
+
+# initialize ip address list
+ip_address_list = []
+
+# loop until data is copied to the clipboard
+while not ip_address_list:
+    input("Copy the IP addresses you want to use from excel, then press Enter... ")
+    # get the copied data from the clipboard
+    copied_data = pyperclip.paste()
+
+    # convert the copied data to a list using pandas
+    ip_address_list = pd.Series(copied_data.split('\n')).tolist()
+
+    # remove any empty elements from the list
+    ip_address_list = [item.strip() for item in ip_address_list if item.strip()]
+
+# print(ip_address_list)
+
+for ip in ip_address_list:
+    print(f"add host name {prefix}{ip} ip-address {ip} color {color_amend}")
